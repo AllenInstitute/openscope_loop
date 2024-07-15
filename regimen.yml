@@ -131,7 +131,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPA_60MIN_DAY1_2
-            group: "movie_order_groupA"
+            group: "rig_hab_day1_groupA"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
@@ -140,7 +140,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPA_90MIN_DAY3_4
-            group: "movie_order_groupA"
+            group: "rig_hab_day3_groupA"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
@@ -149,7 +149,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPA_120MIN_DAY5
-            group: "movie_order_groupA"
+            group: "rig_hab_day5_groupA"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
@@ -167,7 +167,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPB_60MIN_DAY1_2
-            group: "movie_order_groupB"
+            group: "rig_hab_day1_groupB"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
@@ -176,7 +176,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPB_90MIN_DAY3_4
-            group: "movie_order_groupB"
+            group: "rig_hab_day3_groupB"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
@@ -185,7 +185,7 @@ stages:
         script_md5: *loop_script_md5
         parameters:
             stage: GROUPB_120MIN_DAY5
-            group: "movie_order_groupB"
+            group: "rig_hab_day5_groupB"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
 
