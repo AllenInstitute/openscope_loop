@@ -268,7 +268,8 @@ def make_receptive_field_mapping(window, display_interval):
     return stimulus
 
 
-def build_session_stimuli(window, data_folder, ordering_name, zebra_movie_path):
+def build_session_stimuli(window, data_folder, ordering_name, zebra_movie_path,
+                          include_rf_mapping=True):
     """Build every stimulus in Group C Session 2 in protocol order."""
     order = load_movie_order(data_folder, ordering_name)
     movie_paths = glob.glob(os.path.join(data_folder, "full_movies", "*.npy"))
@@ -284,8 +285,11 @@ def build_session_stimuli(window, data_folder, ordering_name, zebra_movie_path):
         window, timeline["static_gratings"]))
     stimuli.append(make_zebra_noise(
         window, zebra_movie_path, timeline["zebra_noise"]))
-    stimuli.append(make_receptive_field_mapping(
-        window, timeline["rf_mapping"]))
+    if include_rf_mapping:
+        stimuli.append(make_receptive_field_mapping(
+            window, timeline["rf_mapping"]))
+    else:
+        timeline["session_end"] = timeline["rf_mapping"][0]
 
     return stimuli, timeline
 
@@ -313,6 +317,7 @@ if __name__ == "__main__":
     if not os.path.isabs(zebra_movie_path):
         zebra_movie_path = os.path.join(data_folder, zebra_movie_path)
 
+    include_rf_mapping = json_params.get("include_rf_mapping", True)
     dev_mode = json_params.get("dev_mode", True)
 
     dist = 15.0
@@ -330,7 +335,8 @@ if __name__ == "__main__":
                     )
 
     stims, timeline = build_session_stimuli(
-        window, data_folder, ordering_name, zebra_movie_path)
+        window, data_folder, ordering_name, zebra_movie_path,
+        include_rf_mapping=include_rf_mapping)
     logging.info("Expected Session 2 duration: %.1f minutes",
                  timeline["session_end"] / 60.0)
 

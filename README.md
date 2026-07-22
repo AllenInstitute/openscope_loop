@@ -116,6 +116,7 @@ Session 2 parameters:
 {
    "data_folder": "path/to/data",
    "stimulus_orderings": "round_2_controls/movie_order_groupC02",
+   "include_rf_mapping": true,
    "zebra_movie": "zebra_allen_screen_tscale_30_scale_10.npy",
    "dev_mode": false
 }

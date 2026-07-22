@@ -38,7 +38,7 @@ _loop_second_script: &loop_second_script
     http://stash.corp.alleninstitute.org/users/jeromel/repos/openscope_loop/raw/stimulus_loop_second.py?at=main
 
 _loop_second_script_md5: &loop_second_script_md5
-    fc308ee80cbee101d989850836fde1ef
+    f2daf345239001d771e7fa57ccf91b40
 
 ### mtrain definitions
 name: Openscope_Loop_v8_GroupC
@@ -162,6 +162,7 @@ stages:
         parameters:
             stage: EPHYS_GROUPC_SESSION2
             stimulus_orderings: "round_2_controls/movie_order_groupC02"
+            include_rf_mapping: True
             zebra_movie: "zebra_allen_screen_tscale_30_scale_10.npy"
             dev_mode: False
             data_folder: //allen/programs/mindscope/workgroups/openscope/2024-Loop/openscope_loop/data
