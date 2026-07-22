@@ -34,13 +34,29 @@
 #               - 50 presentations of movie52 (25 min)
 #               - 10 presentations of movie00 (5 min)
 #               - 20 alternations between movie03 and movie52 (10 min)
-import psychopy.visual
-import camstim
+#   3. For group C (new experiment, August 2026):
+#           - Session 1 (day 1; 115 min):
+#               - Phase 1 (60 min):
+#                   - 50 presentations of movie01 (25 min)
+#                   - 10 presentations of movie00 (5 min)
+#                   - 50 alternations between movie01 and movie02 (25 min)
+#                   - 10 presentations of movie00 (5 min)
+#
+#               - Phase 2 (55 min):
+#                   - 20 presentations of movie52 (10 min)
+#                   - 10 presentations of movie00 (5 min)
+#                   - 50 sequential presentations from movie52 to movie03 (25 min)
+#                   - 10 presentations of movie00 (5 min)
+#                   - 20 alternations between movie52 and movie03 (10 min)
+#
+#               - Receptive-field mapping (8.1 min):
+#                   - 8 repeats of 20-degree Gabors across a 9 x 9 position grid
+
 import argparse
-import numpy as np
-from psychopy import monitors
-from camstim import SweepStim, Foraging, Window, Warp, MovieStim
 import glob
+import numpy as np
+from psychopy import monitors, visual
+from camstim import SweepStim, Foraging, Window, Warp, MovieStim, Stimulus
 import logging
 import yaml
 import os
@@ -89,38 +105,37 @@ def make_movie_stimulus(movie_paths, order, window):
 
     return stims, last_time
 
-def create_receptive_field_mapping(number_runs = 15):
-    x = np.arange(-40,45,10)
-    y = np.arange(-40,45,10)
-    position = []
-    for i in x:
-        for j in y:
-            position.append([i,j])
 
-    stimulus = Stimulus(visual.GratingStim(window,
-                        units='deg',
-                        size=20,
-                        mask="circle",
-                        texRes=256,
-                        sf=0.1,
-                        ),
+def create_receptive_field_mapping(window, number_runs=8):
+    """Create the Gabor receptive-field mapping block used after recording."""
+    positions = []
+    for x_position in np.arange(-40, 45, 10):
+        for y_position in np.arange(-40, 45, 10):
+            positions.append([x_position, y_position])
+
+    stimulus = Stimulus(
+        visual.GratingStim(window,
+                           units='deg',
+                           size=20,
+                           mask="circle",
+                           texRes=256,
+                           sf=0.1),
         sweep_params={
-                'Pos':(position, 0),
-                'Contrast': ([0.8], 4),
-                'TF': ([4.0], 1),
-                'SF': ([0.08], 2),
-                'Ori': ([0,45,90], 3),
-                },
+            'Pos': (positions, 0),
+            'TF': ([4.0], 1),
+            'SF': ([0.08], 2),
+            'Ori': ([0, 45, 90], 3),
+            'Contrast': ([0.8], 4),
+        },
         sweep_length=0.25,
         start_time=0.0,
         blank_length=0.0,
         blank_sweeps=0,
         runs=number_runs,
         shuffle=True,
-        save_sweep_table=True,
-        )
-    stimulus.stim_path = r"C:\\not_a_stim_script\\create_receptive_field_mapping.stim"
-
+        save_sweep_table=True)
+    stimulus.stim_path = (
+        r"C:\\not_a_stim_script\\create_receptive_field_mapping.stim")
     return stimulus
 
 
@@ -148,9 +163,10 @@ if __name__ == "__main__":
     
     opto_disabled = json_params.get('disable_opto', True)
     dev_mode = json_params.get("dev_mode", True)
+    include_rf_mapping = json_params.get("include_rf_mapping", True)
 
     # Paths to the movie clip files to load.
-    movie_clip_files = glob.glob(os.path.join(data_folder, 'full_movies','*.npy'))
+    movie_clip_files = glob.glob(os.path.join(data_folder, 'full_movies', '*.npy'))
 
     # Load the movie clip order for each experimental group as provided by the Ziv lab:
     order = (np.loadtxt(os.path.join(data_folder, 'stimulus_orderings', group+".txt")).astype(int))
@@ -172,12 +188,13 @@ if __name__ == "__main__":
                     )
 
     stims, last_time = make_movie_stimulus(movie_clip_files, order, window)
-    
-    # We create the receptive field mapping stimulus
-    gabors_rf_20 = create_receptive_field_mapping(8)
-    gabors_rf_20_ds = [(last_time, last_time+640)]
-    gabors_rf_20.set_display_sequence(gabors_rf_20_ds)
-    stims.append(gabors_rf_20)
+
+    if include_rf_mapping:
+        rf_mapping = create_receptive_field_mapping(window, number_runs=8)
+        rf_duration = rf_mapping.get_total_time()
+        rf_mapping.set_display_sequence(
+            [(last_time, last_time + rf_duration)])
+        stims.append(rf_mapping)
 
     ss = SweepStim(window,
                      stimuli=stims,
