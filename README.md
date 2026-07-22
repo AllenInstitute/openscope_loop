@@ -58,6 +58,22 @@ this file directly under the configured `data_folder`. The source MP4 is
 included at
 `data/stimulus_orderings/round_2_controls/zebra_allen_screen_tscale_30_scale_10.mp4`.
 
+Convert the source movie with a modern Python 3 environment containing NumPy
+and OpenCV. This preparation step is separate from the Python 2.7 acquisition
+environment:
+
+```bash
+python3 -m pip install numpy "opencv-python-headless>=4.8.1.78,<5"
+python3 data/stimulus_orderings/round_2_controls/convert_mp4_to_npy.py \
+   data/stimulus_orderings/round_2_controls/zebra_allen_screen_tscale_30_scale_10.mp4 \
+   data/zebra_allen_screen_tscale_30_scale_10.npy
+```
+
+The converter writes frames incrementally so it does not hold the complete
+movie in memory. For the included source, expect a `uint8` array with shape
+`(9000, 848, 1072)` and a file size of approximately 8.18 GB (7.62 GiB). A
+partial file is removed if decoding or validation fails.
+
 The expected production layout is:
 
 ```text
